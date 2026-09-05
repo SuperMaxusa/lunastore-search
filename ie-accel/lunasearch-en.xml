@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<os:openServiceDescription xmlns:os="http://www.microsoft.com/schemas/openservicedescription/1.0">
+    <!-- en version -->
+    <os:homepageUrl>http://lunastore.app</os:homepageUrl>
+    <os:author>supermaxusa</os:author>
+    <os:display>
+        <os:name>Search with LunaStore</os:name>
+        <os:icon>http://lunastore.app/staticfiles/favicon.ico</os:icon>
+    </os:display>
+    <os:activity category="Search">
+        <os:activityAction context="selection">
+            <os:execute action="http://lunastore.app:80/search.php">
+                <os:parameter name="q" value="{selection}" type="text" />
+            </os:execute>
+        </os:activityAction>
+    </os:activity>
+</os:openServiceDescription>

@@ -1,0 +1,85 @@
+<!DOCtype html>
+<html>
+    <head>
+        <title>LunaStore Search IE Accelerator</title>
+        <style>
+            #install_button {
+                font-size: 28px;
+                margin-bottom: 15px;
+            }
+
+            #browser_warning {
+                border: solid 2px black;
+                padding: 5px;
+            }
+
+            #browser_warning button {
+                float: right;
+            }
+        </style>
+        <script type="text/javascript">
+            var isIE = /MSIE ([89]|10)\b|Trident\/7\.0;.*rv:11\./.test(window.navigator.userAgent);
+
+            function browserWarningVisible(flag) {
+                document.getElementById("browser_warning").style.display = flag ? "block" : "none";
+            }
+
+            function getSelectedLanguage() {
+                return document.getElementById("lang_select").value || "en";
+            }
+
+            function installAccelerator() {
+                if (isIE && window.external && ("AddService" in window.external)) {
+                    try {
+                        window.external.AddService("lunasearch-" + getSelectedLanguage() + ".xml");
+                    } catch (e) {
+                        alert("Something went wrong: " + e);
+                    }
+                } else {
+                    alert("Your browser doesn't support IE accelerators.");
+                }
+            }
+
+            function onloadWindow() {
+                browserWarningVisible(!isIE);
+            }
+
+            if (window.addEventListener) {
+                window.addEventListener("load", onloadWindow, false);
+            } else {
+                window.attachEvent("onload", onloadWindow);
+            }
+        </script>
+    </head>
+    <body>
+        <div id="browser_warning" style="display: none;">
+            <b>Warning</b>: your browser doesn't support this accelerator
+            <button onclick="browserWarningVisible(false)">Close</button>
+        </div>
+        <center>
+            <h2>LunaStore Search IE Accelerator</h2>
+            <button id="install_button" onclick="installAccelerator()">Install!</button>
+            <br />
+            <select id="lang_select" name="parameter">
+                <option value="en" selected>English</option>
+                <option value="ru">Russian</option>
+                <option value="uk">Ukrainian</option>
+            </select>
+        </center>
+        <hr>
+        <ul>
+            <li>
+                <b>What is this?</b> This is an unofficial accelerator for Internet Explorer
+                8 &ndash; 11 to search on <a href="http://lunastore.app">LunaStore</a>.
+            </li>
+            <li>
+                <b>How to use?</b> Click the big "Install!" button above and confirm the
+                installation. Now you can highlight text on any page, right-click and choose
+                <i>"All accelerators"</i> -&gt; <i>"Search with LunaStore"</i>.
+            </li>
+            <li>
+                <b>Source</b>: <a href="https://github.com/SuperMaxusa/lunastore-search">GitHub</a>
+            </li>
+        </ul>
+    </body>
+</html>

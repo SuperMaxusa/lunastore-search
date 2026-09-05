@@ -1,0 +1,121 @@
+<!DOCtype html>
+<html>
+    <head>
+        <title>LunaStore OpenSearch</title>
+        <style>
+            #install_button {
+                font-size: 28px;
+                margin-bottom: 15px;
+            }
+        </style>
+        <script type="text/javascript" src="server-check.js" defer></script>
+        <script type="text/javascript">
+            // https://caniuse.com/mdn-api_external_addsearchprovider
+            // https://caniuse.com/wf-external
+            // https://github.com/whatwg/html/issues/713
+
+            function isFirefox() {
+                return navigator.userAgent.indexOf("Firefox") !== -1;
+            }
+
+            function getFirefoxVersion() {
+                if (!isFirefox()) return false;
+                var match = navigator.userAgent.match(/Firefox\/(\d+)\./);
+                if (match) return parseInt(match[1]);
+            }
+
+            function injectNewSearchLink(xmlPath) {
+                var head = document.head || document.getElementsByTagName("head")[0];
+                var link = document.createElement('link');
+                link.rel = "search";
+                link.type = "application/opensearchdescription+xml";
+                link.title = "LunaStore";
+                link.href = xmlPath;
+                head.appendChild(link);
+            }
+
+            function tryAddSearchProvider(xmlPath) {
+                if (!(window.external && ("AddSearchProvider" in window.external))) return false;
+
+                // Firefox 77+ have an placeholder function in AddSearchProvider
+                if (getFirefoxVersion() > 76) return false;
+
+                try {
+                    window.external.AddSearchProvider(xmlPath);
+                    return true;
+                } catch (e) {
+                    alert("Something went wrong: " + e);
+                }
+            }
+
+            function installSearch() {
+                var osXmlPath = window.location + (window.EXTERNAL_SERVER ? "opensearch.xml" : "opensearch-lite.xml");
+                injectNewSearchLink(osXmlPath);
+                if (!tryAddSearchProvider(osXmlPath)) {
+                    alert("Follow by the instructions on the page for your browser");
+                }
+            }
+
+            function onloadWindow() {
+                if (window.EXTERNAL_SERVER) {
+                    document.getElementById("suggestions_note").style.display = "none";
+                }
+            }
+
+            if (window.addEventListener) {
+                window.addEventListener("load", onloadWindow, false);
+            } else {
+                window.attachEvent("onload", onloadWindow);
+            }
+        </script>
+    </head>
+    <body>
+        <center>
+            <h2>LunaStore OpenSearch</h2>
+            <button id="install_button" onclick="installSearch()">Install!</button>
+            <br />
+            <div id="suggestions_note">
+                <b>Note</b>: this version doesn't support search suggestions.
+                You can deploy your local server for that, see the guide on
+                <a href="https://github.com/SuperMaxusa/lunastore-search">GitHub</a>
+            </div>
+        </center>
+        <hr>
+        <ul>
+            <li>
+                <b>What is this?</b> This is an OpenSearch Description Document
+                to search on <a href="http://lunastore.app">LunaStore</a>, adds as a
+                new search provider.
+            </li>
+            <li>
+                <b>How to use?</b> Click the big "Install!" button above and if you use:
+                <ul>
+                    <li>
+                        <b>Internet Expolrer 7+, Firefox 2+</b>: Confirm the installation
+                        (note: suggestions doesn't work on Internet Explorer 7)
+                    </li>
+                    <li>
+                        <!-- https://olddocs.evergreen-ils.org/2.10/_adding_opensearch_to_firefox_browser.html -->
+                        <b>Firefox 2+ (fallback)</b>: Open the drop-down menu in the search bar
+                        (on this page) and select <i>'Add "LunaStore"'</i>
+                    </li>
+                    <li>
+                        <!-- https://www.ctrl.blog/entry/firefox-reintroduces-opensearch/ -->
+                        <b>Firefox 61+</b>: Click on the three dots on the search bar (on this page)
+                        and select <i>'Add "LunaStore" in one-click search'</i>
+                    </li>
+                    <li>
+                        <b>Firefox 89+</b>: Right-click on the search bar (on this page) and select
+                        <i>'Add "LunaStore"'</i>
+                    </li>
+                    <li>
+                        <b>Modern Chromium</b>: Not available (i guess?), sorry :(
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <b>Source</b>: <a href="https://github.com/SuperMaxusa/lunastore-search">GitHub</a>
+            </li>
+        </ul>
+    </body>
+</html>
